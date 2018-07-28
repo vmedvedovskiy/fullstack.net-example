@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Fullstack.NET.Controllers;
+using Fullstack.NET.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace Fullstack.NET
 {
@@ -24,6 +25,21 @@ namespace Fullstack.NET
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+
+            services
+                .AddResponseCompression()
+                .AddResponseCaching()
+                .AddCors();
+
+            services.AddScoped<IStoreQueryService, StoreQueryService>();
+
+            services.AddLogging(loggingConfig =>
+            {
+                loggingConfig
+                    .AddDebug()
+                    .AddConsole()
+                    .SetMinimumLevel(LogLevel.Trace);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -31,10 +47,26 @@ namespace Fullstack.NET
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                app
+                    .UseDeveloperExceptionPage()
+                    .UseDatabaseErrorPage();
             }
 
-            app.UseMvc();
+            app.UseCors(policy =>
+            {
+                if (env.IsDevelopment())
+                {
+                    policy
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowAnyOrigin();
+                }
+            });
+
+            app
+                .UseMvc()
+                .UseResponseCaching()
+                .UseResponseCompression();
         }
     }
 }
