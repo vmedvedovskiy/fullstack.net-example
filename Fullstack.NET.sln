@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2042
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fullstack.NET", "Fullstack.NET\Fullstack.NET.csproj", "{B60C1359-5B8C-47BE-80B0-ED697868EBD1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fullstack.NET", "Fullstack.NET\Fullstack.NET.csproj", "{B60C1359-5B8C-47BE-80B0-ED697868EBD1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fullstack.NET.Database", "Fullstack.NET.Database\Fullstack.NET.Database.csproj", "{AC9E0DC4-7CD8-4DB6-A41D-E775EA2AA4D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fullstack.NET.Services", "Fullstack.NET.Services\Fullstack.NET.Services.csproj", "{9DE72080-3173-4CC1-B5D5-CD25FF9D269C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{B60C1359-5B8C-47BE-80B0-ED697868EBD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B60C1359-5B8C-47BE-80B0-ED697868EBD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B60C1359-5B8C-47BE-80B0-ED697868EBD1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC9E0DC4-7CD8-4DB6-A41D-E775EA2AA4D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC9E0DC4-7CD8-4DB6-A41D-E775EA2AA4D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC9E0DC4-7CD8-4DB6-A41D-E775EA2AA4D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC9E0DC4-7CD8-4DB6-A41D-E775EA2AA4D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DE72080-3173-4CC1-B5D5-CD25FF9D269C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DE72080-3173-4CC1-B5D5-CD25FF9D269C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DE72080-3173-4CC1-B5D5-CD25FF9D269C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DE72080-3173-4CC1-B5D5-CD25FF9D269C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

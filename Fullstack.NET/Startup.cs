@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Fullstack.NET.Controllers;
-using Fullstack.NET.Services;
+﻿using Fullstack.NET.Database;
+using Fullstack.NET.Services.Products;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -20,8 +17,7 @@ namespace Fullstack.NET
         }
 
         public IConfiguration Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
+        
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
@@ -31,7 +27,11 @@ namespace Fullstack.NET
                 .AddResponseCaching()
                 .AddCors();
 
-            services.AddScoped<IStoreQueryService, StoreQueryService>();
+            services.AddDbContext<StoreDbContext>(_ => _
+                .UseInMemoryDatabase(nameof(StoreDbContext))
+                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
+
+            services.AddScoped<IProductsQueryService, ProductsQueryService>();
 
             services.AddLogging(loggingConfig =>
             {
@@ -41,8 +41,7 @@ namespace Fullstack.NET
                     .SetMinimumLevel(LogLevel.Trace);
             });
         }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
