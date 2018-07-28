@@ -10,7 +10,7 @@ namespace Fullstack.NET.Database.Authentication
         {
             ctx.Users.Add(new User
             {
-                Id = Guid.NewGuid(),
+                Id = new Guid("fdf06508-52f1-4ce8-93aa-fb32ef95269f"),
                 PasswordHash = Encoding.UTF8.GetString(
                     SHA256.Create().ComputeHash(
                         Encoding.UTF8.GetBytes("test"))),

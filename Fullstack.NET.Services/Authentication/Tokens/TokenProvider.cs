@@ -46,12 +46,11 @@ namespace Fullstack.NET.Services.Authentication.Tokens
                     Convert.FromBase64String(token),
                     DoOAEPPadding);
 
-            using (var stream = new MemoryStream())
+            using (var stream = new MemoryStream(decryptedToken))
             {
                 var deserializedData = (TokenData)serializer.ReadObject(stream);
 
-                return DateTime.FromFileTimeUtc(deserializedData.TodayEpochSeconds)
-                    == DateTime.Today;
+                return deserializedData.TodayEpochSeconds == DateTime.Today.ToFileTimeUtc();
             }
         }
 
