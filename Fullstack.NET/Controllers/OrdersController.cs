@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Fullstack.NET.Controllers
 {
-    [AuthenticateAttribute]
+    [Authenticate]
     [Route("api/v1/store/orders")]
     public class OrdersController : Controller
     {

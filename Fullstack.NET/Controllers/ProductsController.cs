@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Fullstack.NET.Authentication;
 using Fullstack.NET.Services.Products;
 using Microsoft.AspNetCore.Mvc;
 
