@@ -1,5 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Fullstack.NET.Authentication;
 using Fullstack.NET.Services.Products;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,11 +15,11 @@ namespace Fullstack.NET.Controllers
 
         [HttpGet]
         [Route("products")]
-        public async Task<JsonResult> GetProducts()
+        public async Task<IActionResult> GetProducts()
         {
             var goods = await this.storeQueryService.GetProducts();
 
-            return this.Json(goods);
+            return this.Ok(goods);
         }
     }
 }

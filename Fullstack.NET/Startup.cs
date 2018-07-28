@@ -1,4 +1,6 @@
-﻿using Fullstack.NET.Database;
+﻿using Fullstack.NET.Authentication;
+using Fullstack.NET.Database;
+using Fullstack.NET.Services.Authentication;
 using Fullstack.NET.Services.Orders;
 using Fullstack.NET.Services.Products;
 using Microsoft.AspNetCore.Builder;
@@ -12,10 +14,7 @@ namespace Fullstack.NET
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+        public Startup(IConfiguration configuration) => Configuration = configuration;
 
         public IConfiguration Configuration { get; }
         
@@ -34,6 +33,8 @@ namespace Fullstack.NET
 
             services.AddScoped<IProductsQueryService, ProductsQueryService>();
             services.AddScoped<IOrdersQueryService, OrdersQueryService>();
+
+            services.AddScoped<ITokenProvider, TokenProvider>();
 
             services.AddLogging(loggingConfig =>
             {
