@@ -1,20 +1,24 @@
 ﻿using System;
 using System.Security.Cryptography;
-using System.Text;
 using System.Runtime.Serialization.Json;
 using System.IO;
+using System.Runtime.Serialization;
+using Microsoft.Extensions.Options;
 
 namespace Fullstack.NET.Services.Authentication.Tokens
 {
-    public class TokenProvider : ITokenProvider
+    public class TokenProvider : ITokenProvider, IDisposable
     {
+        private const bool DoOAEPPadding = false;
+
         private readonly RSACryptoServiceProvider cryptoAlgorithm 
             = new RSACryptoServiceProvider();
 
         private readonly DataContractJsonSerializer serializer
             = new DataContractJsonSerializer(typeof(TokenData));
 
-        private readonly RSAEncryptionPadding padding = RSAEncryptionPadding.OaepSHA512;
+        public TokenProvider(IOptions<TokenOptions> opts)
+            => this.cryptoAlgorithm.ImportParameters(this.FromOptions(opts.Value));
 
         public string Get(UserModel user)
         {
@@ -28,19 +32,19 @@ namespace Fullstack.NET.Services.Authentication.Tokens
 
                 serializer.WriteObject(stream, tokenData);
 
-                var encryptedToken = cryptoAlgorithm.Encrypt(
+                var encryptedToken = this.cryptoAlgorithm.Encrypt(
                     stream.ToArray(),
-                    padding);
+                    DoOAEPPadding);
 
-                return Encoding.UTF8.GetString(encryptedToken);
+                return Convert.ToBase64String(encryptedToken);
             }
         }   
 
         public bool IsValid(string token)
         {
-            var decryptedToken = cryptoAlgorithm.Decrypt(
-                    Encoding.UTF8.GetBytes(token),
-                    padding);
+            var decryptedToken = this.cryptoAlgorithm.Decrypt(
+                    Convert.FromBase64String(token),
+                    DoOAEPPadding);
 
             using (var stream = new MemoryStream())
             {
@@ -51,10 +55,30 @@ namespace Fullstack.NET.Services.Authentication.Tokens
             }
         }
 
+        public void Dispose() => this.cryptoAlgorithm?.Dispose();
+
+        private RSAParameters FromOptions(TokenOptions opts)
+        {
+            return new RSAParameters
+            {
+                D = Convert.FromBase64String(opts.D),
+                DP = Convert.FromBase64String(opts.DP),
+                DQ = Convert.FromBase64String(opts.DQ),
+                Exponent = Convert.FromBase64String(opts.Exponent),
+                InverseQ = Convert.FromBase64String(opts.InverseQ),
+                Modulus = Convert.FromBase64String(opts.Modulus),
+                P = Convert.FromBase64String(opts.P),
+                Q = Convert.FromBase64String(opts.Q)
+            };
+        }
+
+        [DataContract]
         private class TokenData
         {
+            [DataMember]
             public string Username { get; set; }
 
+            [DataMember]
             public long TodayEpochSeconds { get; set; }
         }
     }

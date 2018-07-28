@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Text;
+using System.Threading.Tasks;
 using Fullstack.NET.Models;
 using Fullstack.NET.Services.Authentication;
 using Fullstack.NET.Services.Authentication.Tokens;
@@ -12,9 +13,17 @@ namespace Fullstack.NET.Controllers
         private readonly IUsersQueryService users;
         private readonly ITokenProvider tokens;
 
+        public AuthenticationController(
+            IUsersQueryService users, 
+            ITokenProvider tokens)
+        {
+            this.users = users;
+            this.tokens = tokens;
+        }
+
         [Route("login")]
         [HttpPost]
-        public async Task<IActionResult> Login(CredentialsModel credentials)
+        public async Task<IActionResult> Login([FromBody] CredentialsModel credentials)
         {
             var user = await this.users
                 .Find(credentials.Username, credentials.Password);

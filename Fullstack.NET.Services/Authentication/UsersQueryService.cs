@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Fullstack.NET.Database.Authentication;
@@ -11,6 +12,13 @@ namespace Fullstack.NET.Services.Authentication
         private readonly AuthenticationDbContext ctx;
         private readonly SHA256 hasher = SHA256.Create();
 
+        public UsersQueryService(AuthenticationDbContext ctx)
+        {
+            this.ctx = ctx;
+
+            InitializeIfNeeded(ctx);
+        }
+
         public async Task<UserModel> Find(string username, string password)
         {
             var hashedPassword = Encoding.UTF8.GetString(
@@ -22,7 +30,15 @@ namespace Fullstack.NET.Services.Authentication
                 _.Username == username
                 && _.PasswordHash == hashedPassword);
 
-            return user == null ? null : new UserModel(user.PasswordHash);
+            return user == null ? null : new UserModel(user.Username);
+        }
+
+        private static void InitializeIfNeeded(AuthenticationDbContext ctx)
+        {
+            if(!ctx.Users.Any(_ => _.Username == "test"))
+            {
+                AuthenticationDbContextInitializer.Seed(ctx);
+            }
         }
     }
 }

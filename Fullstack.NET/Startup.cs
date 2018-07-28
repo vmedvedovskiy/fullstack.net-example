@@ -26,15 +26,18 @@ namespace Fullstack.NET
             services
                 .AddResponseCompression()
                 .AddResponseCaching()
-                .AddCors();
+                .AddCors()
+                .Configure<TokenOptions>(this.Configuration.GetSection("Key"));
 
-            services.AddDbContext<StoreDbContext>(_ => _
-                .UseInMemoryDatabase(nameof(StoreDbContext))
-                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
+            services.AddDbContext<StoreDbContext>(
+                _ => _
+                    .UseInMemoryDatabase(nameof(StoreDbContext))
+                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
 
-            services.AddDbContext<AuthenticationDbContext>(_ => _
-                .UseInMemoryDatabase(nameof(AuthenticationDbContext))
-                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
+            services.AddDbContext<AuthenticationDbContext>(
+                _ => _
+                    .UseInMemoryDatabase(nameof(AuthenticationDbContext))
+                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
 
             services.AddScoped<IProductsQueryService, ProductsQueryService>();
             services.AddScoped<IOrdersQueryService, OrdersQueryService>();

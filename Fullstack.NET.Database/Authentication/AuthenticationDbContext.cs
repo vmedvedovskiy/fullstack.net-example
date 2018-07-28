@@ -4,7 +4,7 @@ namespace Fullstack.NET.Database.Authentication
 {
     public class AuthenticationDbContext : DbContext
     {
-        public AuthenticationDbContext(DbContextOptions<StoreDbContext> options)
+        public AuthenticationDbContext(DbContextOptions<AuthenticationDbContext> options)
             : base(options)
         {
         }
