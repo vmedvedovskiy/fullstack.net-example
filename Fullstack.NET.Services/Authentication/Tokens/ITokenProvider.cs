@@ -1,4 +1,4 @@
-﻿namespace Fullstack.NET.Services.Authentication
+﻿namespace Fullstack.NET.Services.Authentication.Tokens
 {
     public interface ITokenProvider
     {

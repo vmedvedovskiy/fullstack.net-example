@@ -1,6 +1,7 @@
-﻿using Fullstack.NET.Authentication;
-using Fullstack.NET.Database;
+﻿using Fullstack.NET.Database;
+using Fullstack.NET.Database.Authentication;
 using Fullstack.NET.Services.Authentication;
+using Fullstack.NET.Services.Authentication.Tokens;
 using Fullstack.NET.Services.Orders;
 using Fullstack.NET.Services.Products;
 using Microsoft.AspNetCore.Builder;
@@ -31,8 +32,13 @@ namespace Fullstack.NET
                 .UseInMemoryDatabase(nameof(StoreDbContext))
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
 
+            services.AddDbContext<AuthenticationDbContext>(_ => _
+                .UseInMemoryDatabase(nameof(AuthenticationDbContext))
+                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
+
             services.AddScoped<IProductsQueryService, ProductsQueryService>();
             services.AddScoped<IOrdersQueryService, OrdersQueryService>();
+            services.AddScoped<IUsersQueryService, UsersQueryService>();
 
             services.AddScoped<ITokenProvider, TokenProvider>();
 

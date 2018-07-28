@@ -4,7 +4,7 @@ using System.Text;
 using System.Runtime.Serialization.Json;
 using System.IO;
 
-namespace Fullstack.NET.Services.Authentication
+namespace Fullstack.NET.Services.Authentication.Tokens
 {
     public class TokenProvider : ITokenProvider
     {
