@@ -10,5 +10,7 @@ namespace Fullstack.NET.Database
         }
 
         public virtual DbSet<Product> Products { get; set; }
+
+        public virtual DbSet<Order> Orders { get; set; }
     }
 }

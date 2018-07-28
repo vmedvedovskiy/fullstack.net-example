@@ -15,7 +15,7 @@ namespace Fullstack.NET.Controllers
 
         [HttpGet]
         [Route("products")]
-        public async Task<JsonResult> GetProducts(Guid userID)
+        public async Task<JsonResult> GetProducts()
         {
             var goods = await this.storeQueryService.GetProducts();
 

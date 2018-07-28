@@ -1,4 +1,5 @@
 ﻿using Fullstack.NET.Database;
+using Fullstack.NET.Services.Orders;
 using Fullstack.NET.Services.Products;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -32,6 +33,7 @@ namespace Fullstack.NET
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
 
             services.AddScoped<IProductsQueryService, ProductsQueryService>();
+            services.AddScoped<IOrdersQueryService, OrdersQueryService>();
 
             services.AddLogging(loggingConfig =>
             {
