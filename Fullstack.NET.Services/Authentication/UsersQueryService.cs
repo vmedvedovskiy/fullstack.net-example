@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Fullstack.NET.Database.Authentication;
@@ -27,18 +26,27 @@ namespace Fullstack.NET.Services.Authentication
 
             var user = await this.ctx.Set<User>()
                 .FirstOrDefaultAsync(_ =>
-                _.Username == username
-                && _.PasswordHash == hashedPassword);
+                    _.Username == username
+                    && _.PasswordHash == hashedPassword);
 
-            return user == null ? null : new UserModel(user.Username);
+            return MapUser(user);
+        }
+
+        public async Task<UserModel> Find(string phoneNumber)
+        {
+            var user = await this.ctx.Set<User>()
+                .FirstOrDefaultAsync(_ =>
+                    _.PhoneNumber == phoneNumber);
+
+            return MapUser(user);
         }
 
         private static void InitializeIfNeeded(AuthenticationDbContext ctx)
-        {
-            if(!ctx.Users.Any(_ => _.Username == "test"))
-            {
-                AuthenticationDbContextInitializer.Seed(ctx);
-            }
-        }
+            => AuthenticationDbContextInitializer.SeedIfNeeded(ctx);
+
+        private static UserModel MapUser(User user) 
+            => user == null ? 
+            null 
+            : new UserModel(user.Id, user.Username, user.PhoneNumber);
     }
 }

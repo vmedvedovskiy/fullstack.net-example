@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -6,6 +7,19 @@ namespace Fullstack.NET.Database.Authentication
 {
     public class AuthenticationDbContextInitializer
     {
+        public static bool NeedToSeed(AuthenticationDbContext ctx)
+            => !ctx.Users.Any(_ => _.Username == "test");
+
+        public static void SeedIfNeeded(AuthenticationDbContext ctx)
+        {
+            if (!NeedToSeed(ctx))
+            {
+                return;
+            }
+
+            Seed(ctx);
+        }
+
         public static void Seed(AuthenticationDbContext ctx)
         {
             ctx.Users.Add(new User
@@ -14,7 +28,8 @@ namespace Fullstack.NET.Database.Authentication
                 PasswordHash = Encoding.UTF8.GetString(
                     SHA256.Create().ComputeHash(
                         Encoding.UTF8.GetBytes("test"))),
-                Username = "test"
+                Username = "test",
+                PhoneNumber = "+38010056001"
             });
 
             ctx.SaveChanges();

@@ -14,14 +14,14 @@ namespace Fullstack.NET.Controllers
     public class OrdersController : Controller
     {
         private readonly IOrdersQueryService ordersQueryService;
-        private readonly IOrdersCommandService ordersCommandService;
+        private readonly ICreateOrderService createOrderService;
 
         public OrdersController(
             IOrdersQueryService ordersQueryService,
-            IOrdersCommandService ordersCommandService)
+            ICreateOrderService createOrderService)
         {
             this.ordersQueryService = ordersQueryService;
-            this.ordersCommandService = ordersCommandService;
+            this.createOrderService = createOrderService;
         }
 
         [HttpGet]
@@ -42,7 +42,10 @@ namespace Fullstack.NET.Controllers
                 newOrder.SelectedProductIds,
                 Guid.NewGuid());
 
-            await this.ordersCommandService.CreateOrder(createOrderCommand);
+            await this.createOrderService.CreateOrder(
+                new NewAnonymousOrderCommand(
+                    newOrder.PhoneNumber,
+                    newOrder.SelectedProductIds));
 
             return this.StatusCode((int)HttpStatusCode.Created);
         }

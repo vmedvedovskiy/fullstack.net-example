@@ -9,5 +9,7 @@ namespace Fullstack.NET.Database.Authentication
         public string Username { get; set; }
 
         public string PasswordHash { get; set; }
+
+        public string PhoneNumber { get; set; }
     }
 }
