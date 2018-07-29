@@ -31,27 +31,28 @@ namespace Fullstack.NET
 
             const int TransactionsAreNotSupportedByInMemoryCtxWarningId = 30000;
 
-            services.AddDbContext<StoreDbContext>(
-                _ => _
-                    .UseInMemoryDatabase(nameof(StoreDbContext))
-                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
-                    .ConfigureWarnings(w => w
-                        .Ignore(new EventId(TransactionsAreNotSupportedByInMemoryCtxWarningId))));
+            services
+                .AddDbContext<StoreDbContext>(
+                    _ => _
+                        .UseInMemoryDatabase(nameof(StoreDbContext))
+                        .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+                        .ConfigureWarnings(w => w
+                            .Ignore(new EventId(TransactionsAreNotSupportedByInMemoryCtxWarningId))))
+                .AddDbContext<AuthenticationDbContext>(
+                    _ => _
+                        .UseInMemoryDatabase(nameof(AuthenticationDbContext))
+                        .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+                        .ConfigureWarnings(w => w
+                            .Ignore(new EventId(TransactionsAreNotSupportedByInMemoryCtxWarningId))));
 
-            services.AddDbContext<AuthenticationDbContext>(
-                _ => _
-                    .UseInMemoryDatabase(nameof(AuthenticationDbContext))
-                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
-                    .ConfigureWarnings(w => w
-                        .Ignore(new EventId(TransactionsAreNotSupportedByInMemoryCtxWarningId))));
-
-            services.AddScoped<IProductsQueryService, ProductsQueryService>();
-            services.AddScoped<IOrdersQueryService, OrdersQueryService>();
-            services.AddScoped<IOrdersCommandService, OrdersCommandService>();
-            services.AddScoped<IUsersQueryService, UsersQueryService>();
-
-            services.AddScoped<ITokenProvider, TokenProvider>();
-
+            services
+                .AddScoped<IProductsQueryService, ProductsQueryService>()
+                .AddScoped<IOrdersQueryService, OrdersQueryService>()
+                .AddScoped<IOrdersCommandService, OrdersCommandService>()
+                .AddScoped<ICreateOrderService, CreateOrderService>()
+                .AddScoped<IUsersQueryService, UsersQueryService>()
+                .AddScoped<ITokenProvider, TokenProvider>();
+            
             services.AddLogging(loggingConfig =>
             {
                 loggingConfig
