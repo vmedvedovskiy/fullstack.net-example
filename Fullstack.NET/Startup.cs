@@ -29,18 +29,25 @@ namespace Fullstack.NET
                 .AddCors()
                 .Configure<TokenOptions>(this.Configuration.GetSection("Key"));
 
+            const int TransactionsAreNotSupportedByInMemoryCtxWarningId = 30000;
+
             services.AddDbContext<StoreDbContext>(
                 _ => _
                     .UseInMemoryDatabase(nameof(StoreDbContext))
-                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
+                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+                    .ConfigureWarnings(w => w
+                        .Ignore(new EventId(TransactionsAreNotSupportedByInMemoryCtxWarningId))));
 
             services.AddDbContext<AuthenticationDbContext>(
                 _ => _
                     .UseInMemoryDatabase(nameof(AuthenticationDbContext))
-                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
+                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+                    .ConfigureWarnings(w => w
+                        .Ignore(new EventId(TransactionsAreNotSupportedByInMemoryCtxWarningId))));
 
             services.AddScoped<IProductsQueryService, ProductsQueryService>();
             services.AddScoped<IOrdersQueryService, OrdersQueryService>();
+            services.AddScoped<IOrdersCommandService, OrdersCommandService>();
             services.AddScoped<IUsersQueryService, UsersQueryService>();
 
             services.AddScoped<ITokenProvider, TokenProvider>();

@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Fullstack.NET.Services.Authentication.Tokens;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Fullstack.NET.Authentication
@@ -29,6 +30,15 @@ namespace Fullstack.NET.Authentication
             ActionExecutingContext context, 
             ActionExecutionDelegate next)
         {
+            var needToSkipAuth = context.ActionDescriptor
+                .FilterDescriptors
+                .Any(_ => _.Filter is AllowAnonymousFilter);
+
+            if (needToSkipAuth)
+            {
+                await next();
+            }
+
             var token = context.HttpContext
                 .Request
                 .Headers[HttpRequestHeader.Authorization.ToString()]
