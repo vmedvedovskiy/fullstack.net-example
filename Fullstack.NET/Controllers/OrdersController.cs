@@ -14,40 +14,51 @@ namespace Fullstack.NET.Controllers
     public class OrdersController : Controller
     {
         private readonly IOrdersQueryService ordersQueryService;
-        private readonly IOrderOpsService createOrderService;
+        private readonly IOrderOpsService orderOpsService;
 
         public OrdersController(
             IOrdersQueryService ordersQueryService,
             IOrderOpsService createOrderService)
         {
             this.ordersQueryService = ordersQueryService;
-            this.createOrderService = createOrderService;
-        }
-
-        [HttpGet]
-        [Route("{userID:guid}")]
-        public async Task<IActionResult> GetOrders(Guid userID)
-        {
-            var orders = await this.ordersQueryService.GetOrders(userID);
-
-            return this.Ok(orders);
+            this.orderOpsService = createOrderService;
         }
 
         [HttpPost]
         [AllowAnonymous]
         [Route("")]
-        public async Task<IActionResult> CreateOrder([FromBody] NewOrderModel newOrder)
+        public async Task<IActionResult> CreateOrder(
+            [FromBody] NewOrderModel newOrder)
         {
             var createOrderCommand = new NewOrderCommand(
                 newOrder.SelectedProductIds,
                 Guid.NewGuid());
 
-            await this.createOrderService.CreateOrder(
+            await this.orderOpsService.CreateOrder(
                 new NewAnonymousOrderCommand(
                     newOrder.PhoneNumber,
                     newOrder.SelectedProductIds));
 
             return this.StatusCode((int)HttpStatusCode.Created);
+        }
+
+        [HttpPut]
+        [AllowAnonymous]
+        [Route("{orderId:guid}/address")]
+        public async Task<IActionResult> UpdateOrderAddress(
+            Guid orderId,
+            [FromBody] NewAddressModel newAddress)
+        {
+            var updateAddressCommand = new UpdateOrderAddressCommand(
+                orderId,
+                newAddress.DeptNumber,
+                newAddress.City,
+                newAddress.Street,
+                newAddress.StreetNumber);
+
+            await this.orderOpsService.UpdateOrderAddress(updateAddressCommand);
+
+            return this.StatusCode((int)HttpStatusCode.NoContent);
         }
     }
 }
