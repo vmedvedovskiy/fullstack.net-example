@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace Fullstack.NET.Services.Authentication
 {
@@ -7,5 +8,7 @@ namespace Fullstack.NET.Services.Authentication
         Task<UserModel> Find(string username, string password);
 
         Task<UserModel> Find(string phoneNumber);
+
+        Task<UserModel> Find(Guid userId);
     }
 }

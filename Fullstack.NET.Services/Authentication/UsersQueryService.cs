@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Fullstack.NET.Database.Authentication;
@@ -37,6 +38,15 @@ namespace Fullstack.NET.Services.Authentication
             var user = await this.ctx.Set<User>()
                 .FirstOrDefaultAsync(_ =>
                     _.PhoneNumber == phoneNumber);
+
+            return MapUser(user);
+        }
+
+        public async Task<UserModel> Find(Guid userId)
+        {
+            var user = await this.ctx.Set<User>()
+                .FirstOrDefaultAsync(_ =>
+                    _.Id == userId);
 
             return MapUser(user);
         }

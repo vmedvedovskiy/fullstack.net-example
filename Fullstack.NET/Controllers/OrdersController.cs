@@ -14,11 +14,11 @@ namespace Fullstack.NET.Controllers
     public class OrdersController : Controller
     {
         private readonly IOrdersQueryService ordersQueryService;
-        private readonly ICreateOrderService createOrderService;
+        private readonly IOrderOpsService createOrderService;
 
         public OrdersController(
             IOrdersQueryService ordersQueryService,
-            ICreateOrderService createOrderService)
+            IOrderOpsService createOrderService)
         {
             this.ordersQueryService = ordersQueryService;
             this.createOrderService = createOrderService;

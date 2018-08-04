@@ -2,8 +2,10 @@
 
 namespace Fullstack.NET.Services.Orders
 {
-    public interface ICreateOrderService
+    public interface IOrderOpsService
     {
         Task CreateOrder(NewAnonymousOrderCommand newOrder);
+
+        Task UpdateOrderAddress(UpdateOrderAddressCommand address);
     }
 }
