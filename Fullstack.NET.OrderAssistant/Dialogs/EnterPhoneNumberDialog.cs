@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Fullstack.NET.StoreIntegration;
+using Fullstack.NET.StoreIntegration.Contract;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 
@@ -15,13 +17,23 @@ namespace Fullstack.NET.OrderAssistant.Dialogs
             return Task.CompletedTask;
         }
 
-        private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<object> result)
+        private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> result)
         {
-            var activity = await result as Activity;
-            
-            await context.PostAsync($"Hello. Please enter your phone number, so Ican identify you.");
+            var message = await result;
 
-            context.Wait(MessageReceivedAsync);
+            if (message.Type == ActivityTypes.Message)
+            {
+                var apiClient = new StoreClient();
+
+                (await apiClient.FindUser(message.Text))
+                    .Match(
+                        context.Done,
+                        () => context.Fail(new InvalidOperationException("User was not found")));
+            }
+            else
+            {
+                context.Wait(this.MessageReceivedAsync);
+            }
         }
     }
 }

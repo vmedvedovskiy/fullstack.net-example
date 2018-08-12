@@ -8,7 +8,7 @@ namespace Fullstack.NET.StoreIntegration.Contract
         public readonly string Username;
         public readonly string PhoneNumber;
 
-        public UserModel(Guid id, string username, string phoneNumber)
+        public User(Guid id, string username, string phoneNumber)
         {
             this.Id = id;
             this.Username = username;

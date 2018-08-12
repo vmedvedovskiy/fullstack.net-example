@@ -20,7 +20,7 @@ namespace Fullstack.NET.Controllers
             this.tokens = tokens;
         }
 
-        [Route("")]
+        [Route("user/find")]
         [HttpGet]
         public async Task<IActionResult> Find(string phoneNumber = "")
         {
