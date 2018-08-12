@@ -14,6 +14,8 @@ using Microsoft.Extensions.Logging;
 
 namespace Fullstack.NET
 {
+    // TODO: Logging
+    // Automapper
     public class Startup
     {
         public Startup(IConfiguration configuration)

@@ -6,7 +6,7 @@ using Microsoft.Bot.Connector;
 namespace Fullstack.NET.OrderAssistant.Dialogs
 {
     [Serializable]
-    public class RootDialog : IDialog<object>
+    public class EnterPhoneNumberDialog : IDialog<User>
     {
         public Task StartAsync(IDialogContext context)
         {
@@ -18,9 +18,8 @@ namespace Fullstack.NET.OrderAssistant.Dialogs
         private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<object> result)
         {
             var activity = await result as Activity;
-            int length = (activity.Text ?? string.Empty).Length;
             
-            await context.PostAsync($"You sent {activity.Text} which was {length} characters");
+            await context.PostAsync($"Hello. Please enter your phone number, so Ican identify you.");
 
             context.Wait(MessageReceivedAsync);
         }

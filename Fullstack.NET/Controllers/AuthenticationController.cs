@@ -1,5 +1,4 @@
-﻿using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Fullstack.NET.Models;
 using Fullstack.NET.Services.Authentication;
 using Fullstack.NET.Services.Authentication.Tokens;
@@ -19,6 +18,25 @@ namespace Fullstack.NET.Controllers
         {
             this.users = users;
             this.tokens = tokens;
+        }
+
+        [Route("")]
+        [HttpGet]
+        public async Task<IActionResult> Find(string phoneNumber = "")
+        {
+            if(string.IsNullOrWhiteSpace(phoneNumber))
+            {
+                return this.BadRequest();
+            }
+
+            var user = await this.users.Find(phoneNumber);
+
+            if (user == null)
+            {
+                return this.NotFound();
+            }
+
+            return this.Ok(user);
         }
 
         [Route("login")]

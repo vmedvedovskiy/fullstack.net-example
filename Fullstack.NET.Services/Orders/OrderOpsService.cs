@@ -43,7 +43,7 @@ namespace Fullstack.NET.Services.Orders
                 .GetOrder(updateAdressCommand.OrderId);
 
             var user = await this.usersQueryService
-                .Find(updateAdressCommand.UserId);
+                .Find(order.UserId);
 
             await this.addressCommandService.CreateAddress(
                 new NewAddressCommand(
