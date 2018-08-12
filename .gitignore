@@ -1,3 +1,6 @@
 .vs/
 obj/
 bin/
+packages/
+Fullstack.NET.OrderAssistant/Web.Release.config
+Fullstack.NET.OrderAssistant/Web.Debug.config
