@@ -9,9 +9,12 @@ using Optional;
 namespace Fullstack.NET.OrderAssistant.Dialogs
 {
     [Serializable]
-    public class FindUserDialog : IDialog<Option<User>>
+    public class EnterVerificationCodeDialog : IDialog<Option<User>>
     {
         private int attempts = 3;
+        private readonly User user;
+
+        public EnterVerificationCodeDialog(User user) => this.user = user;
 
         public Task StartAsync(IDialogContext context)
         {
@@ -34,17 +37,15 @@ namespace Fullstack.NET.OrderAssistant.Dialogs
             }
 
             var apiClient = new StoreClient();
-            var user = await apiClient.FindUser(message.Text);
+            var user = await apiClient.SubmitVerificationCode(message.Text, message.Text);
 
             await user.Match(
                 async _ =>
                 {
                     await context.PostAsync(
-                        $"Please, enter code we've sent to your phone number to confirm your identity.");
+                        $"Thanks, code is correct");
 
-                    context.Call(
-                        new EnterVerificationCodeDialog(_),
-                        this.AfterVerificationCodeEntered);
+                    context.Done(Option.Some(this.user));
                 },
                 async () =>
                 {
@@ -52,10 +53,7 @@ namespace Fullstack.NET.OrderAssistant.Dialogs
 
                     if (attempts > 0)
                     {
-                        await context.PostAsync(
-                            $"Sorry, I cannot find you in our database. " +
-                            $"Probably, you've entered number wrong. " +
-                            $"Please, check your number for spelling errors.");
+                        await context.PostAsync($"Sorry, code is not correct.");
 
                         context.Wait(this.MessageReceivedAsync);
                     }
@@ -65,9 +63,5 @@ namespace Fullstack.NET.OrderAssistant.Dialogs
                     }
                 });
         }
-
-        private async Task AfterVerificationCodeEntered(
-            IDialogContext context,
-            IAwaitable<Option<User>> result) => context.Done(await result);
     }
 }

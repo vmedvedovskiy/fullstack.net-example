@@ -30,5 +30,19 @@ namespace Fullstack.NET.StoreIntegration
                 return Option.Some(user);
             }
         }
+
+        public Task<Option<object>> SubmitVerificationCode(string phoneNumber, string code)
+        {
+            int intCode;
+
+            if (int.TryParse(code, out intCode))
+            {
+                return Task.FromResult(Option.Some(new object()));
+            }
+            else
+            {
+                return Task.FromResult(Option.None<object>());
+            }
+        }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Fullstack.NET.StoreIntegration.Contract
 {
+    [Serializable]
     public class User
     {
         public readonly Guid Id;
