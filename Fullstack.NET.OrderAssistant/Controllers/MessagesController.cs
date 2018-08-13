@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using System.Web.Http;
+using Fullstack.NET.OrderAssistant.Dialogs;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 
@@ -12,7 +14,9 @@ namespace Fullstack.NET.OrderAssistant
         {
             if (activity.Type == ActivityTypes.Message)
             {
-                await Conversation.SendAsync(activity, () => new Dialogs.RootDialog());
+                await SendTypingIndicator(activity);
+
+                await Conversation.SendAsync(activity, () => new WelcomeDialog());
             }
             else
             {
@@ -31,7 +35,7 @@ namespace Fullstack.NET.OrderAssistant
             {
                 if (message.From.Id != message.Recipient.Id)
                 {
-                    await Conversation.SendAsync(message, () => new Dialogs.WelcomeDialog());
+                    await Conversation.SendAsync(message, () => new WelcomeDialog());
                 }
             }
             else if (message.Type == ActivityTypes.ContactRelationUpdate)
@@ -45,6 +49,18 @@ namespace Fullstack.NET.OrderAssistant
             }
 
             return null;
+        }
+
+        private static async Task SendTypingIndicator(Activity activity)
+        {
+            var typing = activity.CreateReply();
+
+            typing.Type = ActivityTypes.Typing;
+
+            using (var connector = new ConnectorClient(new Uri(activity.ServiceUrl)))
+            {
+                await connector.Conversations.ReplyToActivityAsync(typing);
+            }
         }
     }
 }

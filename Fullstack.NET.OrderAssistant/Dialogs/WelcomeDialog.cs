@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Fullstack.NET.StoreIntegration.Contract;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
+using Optional;
 
 namespace Fullstack.NET.OrderAssistant.Dialogs
 {
@@ -20,41 +21,43 @@ namespace Fullstack.NET.OrderAssistant.Dialogs
         {
             var activity = await result as Activity;
             
-            if(activity.Type == ActivityTypes.ConversationUpdate)
+            if (activity.AsConversationUpdateActivity() != null)
             {
                 await context.PostAsync($"Hello. Please enter your phone number, so I can identify you.");
 
                 context.Call(
-                    new EnterPhoneNumberDialog(),
-                    this.ResumeAfterNewOrderDialog);
+                    new FindUserDialog(),
+                    this.ResumeAfterFindUser);
             }
             else
             {
                 await context.Forward(
-                    new EnterPhoneNumberDialog(),
-                    this.ResumeAfterNewOrderDialog,
+                    new FindUserDialog(),
+                    this.ResumeAfterFindUser,
                     activity);
             }
 
         }
 
-        private async Task ResumeAfterNewOrderDialog(IDialogContext context, IAwaitable<User> result)
+        private async Task ResumeAfterFindUser(IDialogContext context, IAwaitable<Option<User>> result)
         {
-            try
-            {
-                var resultFromNewOrder = await result;
+            var resultFromNewOrder = await result;
 
-                await context.PostAsync($"New order dialog just told me this: {resultFromNewOrder}");
-            }
-            catch(InvalidOperationException)
-            {
-                await context.PostAsync(
-                    $"Sorry, I cannot find you in our database. " +
-                    $"Probably, you've entered number wrong. " +
-                    $"Please, check your number for spelling errors.");
-            }
+            await resultFromNewOrder.Match(
+                _ => ProceedToDelivery(context),
+                () => HandleFailure(context));
+        }
 
-            context.Wait(this.MessageReceivedAsync);
+        private static Task ProceedToDelivery(IDialogContext context) 
+            => context.PostAsync("Let's proceed to delivery address.");
+
+        private static async Task HandleFailure(IDialogContext context)
+        {
+            await context.SayAsync(
+                "Sorry, I can't recognize you. " +
+                "Please wait for a human a bit, he'll take over your order.");
+
+            context.Done(new object());
         }
     }
 }
