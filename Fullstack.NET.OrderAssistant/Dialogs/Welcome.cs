@@ -8,7 +8,7 @@ using Optional;
 namespace Fullstack.NET.OrderAssistant.Dialogs
 {
     [Serializable]
-    public class WelcomeDialog : IDialog
+    public class Welcome : IDialog
     {
         public Task StartAsync(IDialogContext context)
         {
@@ -26,24 +26,25 @@ namespace Fullstack.NET.OrderAssistant.Dialogs
                 await context.PostAsync($"Hello. Please enter your phone number, so I can identify you.");
 
                 context.Call(
-                    new FindUserDialog(),
+                    new FindUser(),
                     this.ResumeAfterFindUser);
             }
             else
             {
                 await context.Forward(
-                    new FindUserDialog(),
+                    new FindUser(),
                     this.ResumeAfterFindUser,
                     activity);
             }
-
         }
 
-        private async Task ResumeAfterFindUser(IDialogContext context, IAwaitable<Option<User>> result)
+        private async Task ResumeAfterFindUser(
+            IDialogContext context, 
+            IAwaitable<Option<User>> result)
         {
-            var resultFromNewOrder = await result;
+            var resultFromFindUser = await result;
 
-            await resultFromNewOrder.Match(
+            await resultFromFindUser.Match(
                 _ => ProceedToDelivery(context),
                 () => HandleFailure(context));
         }

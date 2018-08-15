@@ -43,6 +43,7 @@
     <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Contract\Order.cs" />
     <Compile Include="Contract\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StoreClient.cs" />

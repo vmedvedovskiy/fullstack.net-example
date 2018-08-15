@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -12,10 +13,7 @@ namespace Fullstack.NET.StoreIntegration
     {
         public async Task<Option<User>> FindUser(string phoneNumber)
         {
-            using (var httpClient = new HttpClient
-            {
-                BaseAddress = new Uri("http://localhost:17495")
-            })
+            using (var httpClient = CreateClient())
             {
                 var response = await httpClient.GetAsync(
                     $"api/v1/store/auth/user/find?phoneNumber={WebUtility.UrlEncode(phoneNumber)}");
@@ -31,6 +29,24 @@ namespace Fullstack.NET.StoreIntegration
             }
         }
 
+        public async Task<Option<IReadOnlyList<Order>>> GetUserOrders(Guid userId)
+        {
+            using (var httpClient = CreateClient())
+            {
+                var response = await httpClient.GetAsync($"api/v1/store/users/{userId}/orders");
+
+                if(response.IsSuccessStatusCode)
+                {
+                    return Option.None<IReadOnlyList<Order>>();
+                }
+
+                var orders = JsonConvert.DeserializeObject<List<Order>>(
+                    await response.Content.ReadAsStringAsync());
+
+                return Option.Some((IReadOnlyList<Order>)orders);
+            }
+        }
+
         public Task<Option<object>> SubmitVerificationCode(string phoneNumber, string code)
         {
             int intCode;
@@ -43,6 +59,14 @@ namespace Fullstack.NET.StoreIntegration
             {
                 return Task.FromResult(Option.None<object>());
             }
+        }
+
+        private static HttpClient CreateClient()
+        {
+            return new HttpClient
+            {
+                BaseAddress = new Uri("http://localhost:17495")
+            };
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Fullstack.NET.StoreIntegration;
 using Fullstack.NET.StoreIntegration.Contract;
@@ -9,9 +10,13 @@ using Optional;
 namespace Fullstack.NET.OrderAssistant.Dialogs
 {
     [Serializable]
-    public class FindUserDialog : IDialog<Option<User>>
+    public class FindLatestOrder : IDialog<Option<Order>>
     {
         private int attempts = 3;
+        private readonly User user;
+
+        public FindLatestOrder(User user) 
+            => this.user = user;
 
         public Task StartAsync(IDialogContext context)
         {
@@ -34,17 +39,16 @@ namespace Fullstack.NET.OrderAssistant.Dialogs
             }
 
             var apiClient = new StoreClient();
-            var user = await apiClient.FindUser(message.Text);
+            var orders = await apiClient.GetUserOrders(this.user.Id);
 
-            await user.Match(
+            await orders
+                .FlatMap(_ => _.FirstOrDefault().SomeNotNull())
+                .Match(
                 async _ =>
                 {
-                    await context.PostAsync(
-                        $"Please, enter code we've sent to your phone number to confirm your identity.");
+                    await context.PostAsync($"Is it your order? Created at: {_.CreatedDate}, contains following products: ");
 
-                    context.Call(
-                        new EnterVerificationCodeDialog(_),
-                        this.AfterVerificationCodeEntered);
+                    context.Done(Option.Some(_));
                 },
                 async () =>
                 {
@@ -52,22 +56,15 @@ namespace Fullstack.NET.OrderAssistant.Dialogs
 
                     if (attempts > 0)
                     {
-                        await context.PostAsync(
-                            $"Sorry, I cannot find you in our database. " +
-                            $"Probably, you've entered number wrong. " +
-                            $"Please, check your number for spelling errors.");
+                        await context.PostAsync($"Sorry, code is not correct.");
 
                         context.Wait(this.MessageReceivedAsync);
                     }
                     else
                     {
-                        context.Done(Option.None<User>());
+                        context.Done(Option.None<Order>());
                     }
                 });
         }
-
-        private async Task AfterVerificationCodeEntered(
-            IDialogContext context,
-            IAwaitable<Option<User>> result) => context.Done(await result);
     }
 }

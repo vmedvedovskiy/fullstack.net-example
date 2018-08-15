@@ -20,9 +20,9 @@ namespace Fullstack.NET.Controllers
 
         [HttpGet]
         [Route("orders")]
-        public async Task<IActionResult> GetOrders(Guid userID)
+        public async Task<IActionResult> GetOrders(Guid userId)
         {
-            var orders = await this.ordersQueryService.GetOrders(userID);
+            var orders = await this.ordersQueryService.GetOrders(userId);
 
             return this.Ok(orders);
         }

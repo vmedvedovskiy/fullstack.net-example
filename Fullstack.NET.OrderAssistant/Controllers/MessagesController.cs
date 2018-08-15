@@ -16,7 +16,7 @@ namespace Fullstack.NET.OrderAssistant
             {
                 await SendTypingIndicator(activity);
 
-                await Conversation.SendAsync(activity, () => new WelcomeDialog());
+                await Conversation.SendAsync(activity, () => new Welcome());
             }
             else
             {
@@ -35,7 +35,7 @@ namespace Fullstack.NET.OrderAssistant
             {
                 if (message.From.Id != message.Recipient.Id)
                 {
-                    await Conversation.SendAsync(message, () => new WelcomeDialog());
+                    await Conversation.SendAsync(message, () => new Welcome());
                 }
             }
             else if (message.Type == ActivityTypes.ContactRelationUpdate)

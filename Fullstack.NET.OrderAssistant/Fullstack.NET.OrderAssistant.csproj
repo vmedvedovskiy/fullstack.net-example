@@ -131,9 +131,10 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
-    <Compile Include="Dialogs\EnterVerificationCodeDialog.cs" />
-    <Compile Include="Dialogs\FindUserDialog.cs" />
-    <Compile Include="Dialogs\WelcomeDialog.cs" />
+    <Compile Include="Dialogs\FindLatestOrder.cs" />
+    <Compile Include="Dialogs\EnterVerificationCode.cs" />
+    <Compile Include="Dialogs\FindUser.cs" />
+    <Compile Include="Dialogs\Welcome.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
